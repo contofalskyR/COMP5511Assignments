@@ -1,2 +1,9 @@
 # COMP5511Ass
-COMp 5511 ASSIGNMENTS
+
+Hello, 
+
+This is where we will put all of our assignments henceforth. Google Drive is subpar. 
+
+Best, 
+
+Robert 
