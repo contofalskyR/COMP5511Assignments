@@ -199,3 +199,18 @@ public class MergeSort {
         return arr;
     }
 }
+
+
+// Chat GPT code for MergeSort time complexity 
+
+/*         int actualComparisons = mergeSortOptimized(arr, temp, 0, size);
+            double theoreticalComparisons = size * (Math.log(size) / Math.log(2));
+            double percentageDifference = ((actualComparisons - theoreticalComparisons) / theoreticalComparisons) * 100;
+
+            System.out.println("Your data was " + size + " integers long and took " +
+                    actualComparisons + " comparisons to sort");
+            System.out.println("Theoretical maximum number of comparisons: " + (int) theoreticalComparisons);
+            System.out.println("Percentage difference between actual and theoretical comparisons: " +
+                    String.format("%.2f", percentageDifference) + "%");
+            System.out.println(Arrays.toString(arr)); */
+
