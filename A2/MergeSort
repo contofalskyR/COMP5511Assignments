@@ -1,0 +1,201 @@
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.Random;
+
+public class MergeSort {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        int size;
+        String inputType;
+        int[] arr;
+        int[] temp;
+
+        System.out.println("Enter 'Random' to generate random data or 'Sample' to enter your sample data: ");
+        inputType = scanner.nextLine();
+        inputType = inputType.toLowerCase();
+        inputType = inputType.strip();
+
+        while (!inputType.equals("random") && !inputType.equals("sample")) {
+            System.out.println("It looks like you didn't enter a valid option. " +
+                    "Enter 'Random' to generate random data or 'Sample' for entering your sample data: ");
+            inputType = scanner.nextLine();
+            inputType = inputType.toLowerCase();
+            inputType = inputType.strip();
+        }
+
+        if (inputType.equals("random")) {
+            size = random.nextInt(10000);
+            arr = makeArray(size, 100000, 999999);
+            temp = new int[size];
+
+        } else {
+
+            System.out.println("How many items will be in your dataset?");
+            size = scanner.nextInt();
+
+            arr = new int[size];
+            temp = new int[size];
+
+            System.out.println("Please input you integer data: ");
+            for (int i = 0; i < size; i++) {
+                arr[i] = scanner.nextInt();
+            }
+        }
+
+        scanner.close();
+
+        System.out.println("Your data was " + size + " integers long and took " +
+                mergeSortOptimized(arr, temp, 0, size)
+                + " comparisons to sort");
+        System.out.println(Arrays.toString(arr));
+
+    }
+
+    // given an array and two indices, swaps the array
+    // items held at those indices
+    public static void swap(int arr[], int i, int j) {
+        int hold = arr[i];
+        arr[i] = arr[j];
+        arr[j] = hold;
+    }
+
+    // Given an array and two indices, this function sorts all
+    // elements that fall between the indices (start inclusive)
+    public static int insertionSort(int[] arr, int start, int end) {
+        int comparisons = 0;
+        for (int i = start; i < end; i++) {
+            for (int j = i; j > start && arr[j] < arr[j - 1]; j--) {
+                swap(arr, j, j - 1);
+
+                // adding to the comparison counter
+                comparisons++;
+            }
+        }
+        return comparisons;
+    }
+
+    /*
+     * merge()
+     * Takes in two arrays the indexes of the start, end, and middle
+     * of those arrays that will be merged together.
+     * 
+     * The two arrays should be longer than or equal to the variable end.
+     * 
+     * The array "arr" should be sorted from indexes start-mid and mid+1-end
+     * 
+     * By the end of this function, the first array passed as argument will be
+     * sorted
+     * in ascending order
+     */
+    public static int merge(int[] arr, int[] temp, int start, int end, int mid) {
+        // this keeps track of the comparisons done
+        int comparisons = 0;
+
+        // this keeps count of the first sub array from start-mid
+        int count1 = start;
+
+        // this keeps count of the second sub array from mid+1-end
+        int count2 = mid + 1;
+
+        // this keeps count of final array from start-end
+        int finalCount = start;
+
+        // copying the elements from array start-end into temp
+        for (int i = start; i < end; i++) {
+            temp[i] = arr[i];
+
+        }
+
+        // this runs while both sub arrays still have elements
+        // which have not yet been placed into the final array (arr)
+        while (count1 <= mid && count2 < end) {
+
+            // if the first sub array has the smaller element,
+            // the element gets added to the final array and
+            // the counters for the first sub array and the
+            // final array are incremented
+            if (temp[count1] < temp[count2]) {
+                arr[finalCount] = temp[count1];
+                finalCount++;
+                count1++;
+
+                // if the second sub array element is
+                // smaller than or equal to the first sub
+                // array element, we do the same procedure as
+                // above with the second sub array
+            } else {
+                arr[finalCount] = temp[count2];
+                finalCount++;
+                count2++;
+            }
+        }
+
+        // adding the total comparisons to the counter.
+        comparisons = finalCount - start;
+
+        // if the first sub array still has elements
+        // which have not been sorted into the final array,
+        // the rest of the first sub array gets copied into
+        // the final array
+        while (count1 <= mid) {
+            arr[finalCount] = temp[count1];
+            finalCount++;
+            count1++;
+        }
+
+        // if the second sub array still has elements
+        // which have not been sorted into the final array,
+        // the rest of the second sub array gets copied into
+        // the final array
+        while (count2 <= mid) {
+            arr[finalCount] = temp[count2];
+            finalCount++;
+            count2++;
+        }
+
+        return comparisons;
+    }
+
+    public static int mergeSortOptimized(int[] arr, int[] temp, int start, int end) {
+
+        // This keeps track of the number of comparisons done while sorting the list
+        int comparisons = 0;
+
+        // this keeps an index of the middle element in the array (or sub array)
+        int mid = (start + end) / 2;
+
+        // sub array is smaller than 10 elements, do
+        // an insertion sort
+        if (end - start < 10) {
+            return insertionSort(arr, start, end);
+
+        } else {
+            // merge sorting both halfs of the array when it is <10 items long
+            // adding the comparisons counted to the running tally
+            comparisons += mergeSortOptimized(arr, temp, start, mid);
+            comparisons += mergeSortOptimized(arr, temp, mid, end);
+        }
+
+        // merging the final two sorted arrays together
+        comparisons += merge(arr, temp, start, end, mid - 1);
+
+        return comparisons;
+
+    }
+
+    public static int[] makeArray(int size, int lowerBound, int upperBound) {
+        /*
+         * Creates an array of given size full of ints that fall between
+         * the upper and lower bounds given
+         */
+        int[] arr = new int[size];
+        Random random = new Random();
+        for (int i = 0; i < size; i++) {
+            arr[i] = random.nextInt(lowerBound, upperBound);
+        }
+        return arr;
+    }
+}
