@@ -37,16 +37,25 @@ public class MergeSort{
         }else{
         
                 System.out.println("How many items will be in your dataset?");
+                while(!scanner.hasNextInt()){
+                    System.out.println("Uh oh, you didn't input a valid int. Try again");
+                    scanner.next();
+                }
                 size = scanner.nextInt();
 
         
                 arr = new int[size];
                 temp = new int[size];
 
-                System.out.println("Please input you integer data: ");
+                System.out.println("Please input you integer data, separated by spaces or carriage returns: ");
                 for (int i=0;i<size;i++){
+                    while(!scanner.hasNextInt()){
+                        System.out.println("Uh oh, you didn't input a valid int. Try again");
+                        scanner.next();
+                    }
                     arr[i]=scanner.nextInt();
                 }
+    
             }
 
 
