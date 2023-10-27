@@ -62,8 +62,8 @@ public class MergeSort{
         System.out.println("Your data was "+size+" integers long and took "+
         actualComparisons +" comparisons to sort");
         System.out.println("Theoretical comparisons: " + theoreticalComparisons);
-        System.out.println("Theoretical comparison is calculate as O(n log n), representing the expected number of comparisons. The actual count vary based on the input data set (n) but it is useful to see how closely the implementation of the algorithm aligns with the theoretical expectations");
-        // Theoretical comparison is calculate as O(n log n), representing the expected number of comparisons. The actual caste count vary based on the input data set (n) but it is useful to see how closely the implementation of the algorithm aligns with the theoretical expectations
+        System.out.println("Theoretical comparison is calculate as O(n log n), representing the expected number of comparisons for a MergeSort. The actual count vary based on the input data set (n) but it is useful to see how closely the implementation of the algorithm with the optimization of an insertion sort aligns with the theoretical expectations");
+        // Theoretical comparison is calculate as O(n log n), representing the expected number of comparisons for a MergeSort. The actual count vary based on the input data set (n) but it is useful to see how closely the implementation of the algorithm aligns with the theoretical expectations
 
         
     }
