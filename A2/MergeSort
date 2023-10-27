@@ -60,11 +60,6 @@ public class MergeSort{
             }
 
 
-        scanner.close();
-
-        
-
-
         
         int actualComparisons = mergeSortOptimized(arr, temp, 0, size);
         int theoreticalComparisons = (int)(size * Math.log(size) / Math.log(2));
@@ -74,6 +69,18 @@ public class MergeSort{
         System.out.println("\nTheoretical comparisons: " + theoreticalComparisons);
         System.out.println("\nTheoretical comparison is calculated as O(n log n), representing the expected number of comparisons for a MergeSort. The actual count varies based on the input data set (of size n) but it is useful to see how closely the implementation of the MergeSort algorithm with the optimization of an insertion sort aligns with the theoretical expectations.\n");
         // Theoretical comparison is calculate as O(n log n), representing the expected number of comparisons for a MergeSort. The actual count vary based on the input data set (n) but it is useful to see how closely the implementation of the algorithm aligns with the theoretical expectations
+
+        scanner.nextLine();
+        System.out.println("Type \"YES\" to print the sorted array");
+        inputType = scanner.nextLine();
+        inputType = inputType.toLowerCase();
+        inputType = inputType.strip();
+
+        if (inputType.equals("yes")){
+            System.out.println("\n"+Arrays.toString(arr));
+        }
+
+        scanner.close();
 
         
     }
