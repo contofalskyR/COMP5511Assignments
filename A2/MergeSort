@@ -41,9 +41,10 @@ public class MergeSort{
                     System.out.println("Uh oh, you didn't input a valid int. Try again");
                     scanner.next();
                 }
+
                 size = scanner.nextInt();
 
-        
+                System.out.println("\nCreating an array of size: "+size);
                 arr = new int[size];
                 temp = new int[size];
 
