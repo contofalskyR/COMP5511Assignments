@@ -1,4 +1,4 @@
-# COMP5511Ass
+# COMP5511Assignments
 
 Hello, 
 
