@@ -1,0 +1,83 @@
+
+    /*public void makeHeap(String field){
+
+        if (totalRecords<1){
+            return;
+        }
+
+        //deal with getting the specific field
+        for (int i=1;i<totalRecords;i++){
+            heapUp("ID",i);
+            System.out.println(records[i].EmployeeID);
+        }
+    }*/
+
+    /*public void heapUp(String field, int i){
+        int parent = (i-1)/2;
+        while (i>0 && records[parent].EmployeeID.compareTo(records[i].EmployeeID)>0){
+            //System.out.println(records[i].EmployeeID);
+            //System.out.println(i);
+            swap(parent,i);
+            i = parent;
+            parent = (i-1)/2;
+        }
+    }*/
+ 
+    public void heapDown(String field, int i, int bottom){
+        int left = 2*i+1;
+        int right = 2*i+2;
+        int temp;
+        boolean compared = false;
+
+        while(right<=bottom){
+            if(records[right].EmployeeID.compareTo(records[left].EmployeeID)>0){
+                if (records[i].EmployeeID.compareTo(records[left].EmployeeID)>0){
+                    swap(i,left);
+                    i = left;
+                    compared=true;
+                }
+            }else{
+                if (records[i].EmployeeID.compareTo(records[right].EmployeeID)>0){
+                    swap(i,right);
+                    i = right;
+                    compared = true;
+                }
+            }
+
+            if (compared == false){
+                break;
+            }else{
+                right = 2*i+1;
+                left = 2*i+2;
+                compared = false;
+            }
+
+            
+        }
+        if (left<=bottom){
+            if (records[i].EmployeeID.compareTo(records[right].EmployeeID)>0){
+                swap(i,right);
+                i = right;
+                compared = true;
+                }
+        }
+    }
+    public void heapify(String field){
+
+    }
+    public void heapSort(String field){
+
+        //creating the heap
+        for (int i = 0; i<totalRecords;i++){
+            heapDown(field, 0, i);
+        }
+/* 
+        int bottom = totalRecords-1;
+        while (bottom>=0){
+            swap(bottom,0);
+            System.out.println(records[bottom].EmployeeID);
+            heapDown("field", 0, bottom);
+            bottom--;*/
+
+        //}
+    }
