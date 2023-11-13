@@ -11,6 +11,7 @@ public class Records{
     int size;
     //Use the isFull variable to keep from overfilling the array
     boolean isFull;
+    Node BSTRoot;
 
 
     public Records(int size, String recordFile){
@@ -38,6 +39,9 @@ public class Records{
           } catch (FileNotFoundException e) {
             System.out.println("No records file found");
         }
+
+        //heapsort
+        //construct bst
     }
 
 
@@ -85,11 +89,17 @@ public class Records{
 
         //deal with isFull
         //deal with invalid input
+
+        //insert into sorted list
+        //insert into BST
     }
 
     public void deleteRecord(Record record){
         //find record in array
         //find record in file
+        //delete record
+        heapSort("EmployeeID");
+        //do binary search to find record
         //delete record
     }
 
@@ -178,7 +188,11 @@ public class Records{
 			// call min heapify on the reduced heap
 			heapify(fieldCode, i, 0);
 		}
+
+        //AT THE END, CREATE THE BST
 	}
+
+
 
 
     public static void main(String[] args){
@@ -186,6 +200,38 @@ public class Records{
         employees.heapSort("Salary");
         employees.printRecords();
     }
+
+}
+
+class Node{
+    Record record;
+    int index;
+    Record next;
+    public Node(Record record, int index){
+        this.record = record;
+        this.index = index;
+        this.next = null;
+    }
+
+    public Node constructBST(Record[] records, int start, int end){
+        if (start==end){
+            return null;
+        }
+        //find median
+        //create Empty Node with median
+        //for both side around median, do the same until subarray is empty
+
+        int median = (start+end)/2;
+        Node root = new Node(null,0);
+        root.left = (constructBST(records, start, median-1));
+        root.right = (constructBST(records, median+1, end));
+
+        //Fill bst using in order traversal
+        return root;
+    }
+
+    
+
 
 }
 
