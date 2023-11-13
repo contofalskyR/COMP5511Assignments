@@ -10,6 +10,7 @@ public class Records{
     File file;
     int size;
     //Use the isFull variable to keep from overfilling the array
+    //resize at a certain point
     boolean isFull;
     Node BSTRoot;
 
@@ -39,7 +40,8 @@ public class Records{
           } catch (FileNotFoundException e) {
             System.out.println("No records file found");
         }
-
+        heapSort("EmployeeID");
+        BSTRoot = constructBST(records,0,totalRecords-1);
         //heapsort
         //construct bst
     }
@@ -92,6 +94,30 @@ public class Records{
 
         //insert into sorted list
         //insert into BST
+        //maybe add a check for remaking the bst
+    }
+
+    //Some fields may have multiple variables
+    //with the same value
+    public Record getRecord(String field, String value){
+        int fieldIndex = fieldIndex(field);
+        Node currNode = BSTRoot;
+        String currField;
+
+        
+        while(currNode != null){
+            currField = currNode.record.recordArr[fieldIndex];
+            if(currField.compareTo(value)==0){
+                return currNode.record;
+            }            
+            if(currField.compareTo(value)>0){
+                currNode = currNode.left;
+            }
+            else{
+                currNode = currNode.right;
+            }
+        }
+        return null;
     }
 
     public void deleteRecord(Record record){
@@ -101,6 +127,8 @@ public class Records{
         heapSort("EmployeeID");
         //do binary search to find record
         //delete record
+        //remove from sorted 
+        //remove from bst
     }
 
 
@@ -148,32 +176,27 @@ public class Records{
 		}
 	}
 
-    public void heapSort(String field){
-        int n = totalRecords;
-        int fieldCode;
-
+    public int fieldIndex(String field){
         switch(field){
             case("EmployeeID"):
-                fieldCode = 0;
-                break;
+                return 0;
             case("SIN"):
-                fieldCode = 1;
-                break;
+                return 1;
             case("Name"):
-                fieldCode = 2;
-                break;
+                return 2;
             case("Department"):
-                fieldCode = 3;
-                break;
+                return 3;
             case("Address"):
-                fieldCode = 4;
-                break;
+                return 4;
             case("Salary"):
-                fieldCode = 5;
-                break;
-            default: fieldCode = 0;
-            
+                return 5;
+            default: return 0;
         }
+    }
+
+    public void heapSort(String field){
+        int n = totalRecords;
+        int fieldCode = fieldIndex(field);
 
 		// Build heap
 		for (int i = n / 2 - 1; i >= 0; i--)
@@ -191,6 +214,20 @@ public class Records{
 
         //AT THE END, CREATE THE BST
 	}
+    public Node constructBST(Record[] records, int start, int end){
+        if (start>=end){
+            return null;
+        }
+        //find median
+        //create Node with median
+        //for both side around median, do the same until subarray is empty
+
+        int median = (start+end)/2;
+        Node root = new Node(records[median],median);
+        root.left = (constructBST(records, start, median-1));
+        root.right = (constructBST(records, median+1, end));
+        return root;
+    }
 
 
 
@@ -199,6 +236,7 @@ public class Records{
         Records employees = new Records(50, "records.txt");
         employees.heapSort("Salary");
         employees.printRecords();
+        employees.getRecord("EmployeeID", "DCOOP0123").printFields();
     }
 
 }
@@ -207,31 +245,14 @@ class Node{
     Record record;
     int index;
     Record next;
+    Node left;
+    Node right;
     public Node(Record record, int index){
         this.record = record;
         this.index = index;
         this.next = null;
     }
-
-    public Node constructBST(Record[] records, int start, int end){
-        if (start==end){
-            return null;
-        }
-        //find median
-        //create Empty Node with median
-        //for both side around median, do the same until subarray is empty
-
-        int median = (start+end)/2;
-        Node root = new Node(null,0);
-        root.left = (constructBST(records, start, median-1));
-        root.right = (constructBST(records, median+1, end));
-
-        //Fill bst using in order traversal
-        return root;
-    }
-
     
-
 
 }
 
@@ -248,12 +269,12 @@ class Record{
     String[] recordArr;
 
     public Record(String EmployeeID,String SIN,String Name,String Department,String Address,String Salary){
-        this.EmployeeID=EmployeeID;
-        this.SIN=SIN;
-        this.Name=Name;
-        this.Department=Department;
-        this.Address = Address;
-        this.Salary=Salary;
+        this.EmployeeID=EmployeeID.strip();
+        this.SIN=SIN.strip();
+        this.Name=Name.strip();
+        this.Department=Department.strip();
+        this.Address = Address.strip();
+        this.Salary=Salary.strip();
         this.recordArr = new String[]{EmployeeID,SIN,Name,Department,Address,Salary};
 
     }
