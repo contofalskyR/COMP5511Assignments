@@ -1,0 +1,5 @@
+ISBN, Title, Author, Publisher, Address, Price
+123456, The Great Gatsby, F. Scott Fitzgerald, Scribner, 987 Elm St, 20.00
+789012, To Kill a Mockingbird, Harper Lee, J. B. Lippincott & Co., 654 Oak St, 18.50
+345678, 1984, George Orwell, Secker & Warburg, 321 Maple St, 22.00
+EOF
