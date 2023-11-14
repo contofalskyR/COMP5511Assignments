@@ -41,18 +41,13 @@ public class Records{
             System.out.println("No records file found");
         }
         heapSort("EmployeeID");
-        BSTRoot = constructBST(records,0,totalRecords-1);
-        //heapsort
-        //construct bst
     }
 
 
     public void printRecords(){
-        for (Record record : records){
-            if (record==null){
-                return;
-            }
-            record.printFields();
+        for (int i=0;i<totalRecords;i++){
+
+            printFields(records[i]);
         }
     }
 
@@ -89,7 +84,9 @@ public class Records{
         totalRecords++;
         writeRecordToFile(data);
 
-        //deal with isFull
+        if (totalRecords==size){
+            //resize
+        }
         //deal with invalid input
 
         //insert into sorted list
@@ -120,11 +117,11 @@ public class Records{
         return null;
     }
 
-    public void deleteRecord(Record record){
+    public void updateRecord(Record record){
         //find record in array
         //find record in file
-        //delete record
-        heapSort("EmployeeID");
+        //update record
+
         //do binary search to find record
         //delete record
         //remove from sorted 
@@ -211,8 +208,7 @@ public class Records{
 			// call min heapify on the reduced heap
 			heapify(fieldCode, i, 0);
 		}
-
-        //AT THE END, CREATE THE BST
+        constructBST(records, 0, totalRecords-1);
 	}
     public Node constructBST(Record[] records, int start, int end){
         if (start>=end){
@@ -230,13 +226,32 @@ public class Records{
     }
 
 
+    public static void printFields(Record record) {
+        if (record == null){
+            System.out.println("This record does not exist\n");
+            return;
+        }
+        System.out.println("EmployeeID: " + record.EmployeeID);
+        System.out.println("SIN: " + record.SIN);
+        System.out.println("Name: " + record.Name);
+        System.out.println("Department: " + record.Department);
+        System.out.println("Address: " + record.Address);
+        System.out.println("Salary: " + record.Salary);
+        System.out.println();
+    }
 
+
+    public static void runSystem(){
+        Records employees = new Records(50, "records.txt");
+    }
 
     public static void main(String[] args){
-        Records employees = new Records(50, "records.txt");
-        employees.heapSort("Salary");
-        employees.printRecords();
-        employees.getRecord("EmployeeID", "DCOOP0123").printFields();
+        
+        //employees.heapSort("EmployeeID");
+        //employees.printRecords();
+        //printFields(employees.getRecord("EmployeeID", "DCP0123"));
+        runSystem();
+        
     }
 
 }
@@ -279,14 +294,4 @@ class Record{
 
     }
 
-
-    public void printFields() {
-        System.out.println("EmployeeID: " + EmployeeID);
-        System.out.println("SIN: " + SIN);
-        System.out.println("Name: " + Name);
-        System.out.println("Department: " + Department);
-        System.out.println("Address: " + Address);
-        System.out.println("Salary: " + Salary);
-        System.out.println();
-    }
 }
