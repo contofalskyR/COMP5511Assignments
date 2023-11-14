@@ -22,6 +22,14 @@ public class Sorting{
         long swaps = 0;
         long swapsThisRun = 0;
         long comparisons = 0;
+        long swapsComparisons[] = new long[]{0,0};
+
+        if (n>1000){
+            swapsComparisons = insertionSort(arr, 5);
+            swaps+=swapsComparisons[0]; comparisons+=swapsComparisons[1];
+        }
+
+        
 
         for (int x = n; x>0; x--){
             swapsThisRun = 0;
@@ -34,7 +42,6 @@ public class Sorting{
             }
             if (swapsThisRun==0){
                 //Breaking here brings down the number of comparisons
-                //the more sprted the initial array, the more this improves the algo
                 break;
             }else{
                 swaps+=swapsThisRun;
@@ -64,13 +71,25 @@ def selectionSort(array):
     //Is shellsort a good improvement?
     //maybe look at characteristics of the data to decide on the increment?
     //maybe do Lemon's improvement?
-    public static void insertionSort(int[] arr,int incr){
+    //consider doing insertionsort for the first half of the array.
+    public static long[] insertionSort(int[] arr,int incr){
         int n = arr.length;
-        for (int i=incr;i<n;i+=incr){
-            for (int j = i; j>=incr && arr[j]<arr[j-incr];j-=incr){
+        long swaps = 0;
+        long comparisons = 0;
+        int i;
+        int j;
+
+        for (i=incr;i<n;i+=incr){
+            for (j = i; j>=incr && arr[j]<arr[j-incr];j-=incr){
                 swap(arr,j,j-incr);
+                swaps++;
+                comparisons++;
+            }
+            if(j>=incr){
+                comparisons++;
             }
         }
+        return new long[]{swaps,comparisons};
     }
 
     public static void shellSort(int[] arr){
@@ -136,7 +155,7 @@ def selectionSort(array):
         System.out.println("Bubble swaps on size 10000: "+swapsComparisons[0]);
         System.out.println("Bubble comparisons on size 10000: "+swapsComparisons[1]);
 
-        int[] array4 = makeArray(100000, 1, 9999);
+        /*int[] array4 = makeArray(100000, 1, 9999);
         swapsComparisons = bubbleSort(array4);
         System.out.println("Bubble swaps on size 100000: "+swapsComparisons[0]);
         System.out.println("Bubble comparisons on size 100000: "+swapsComparisons[1]);
@@ -147,7 +166,7 @@ def selectionSort(array):
         System.out.println("Bubble swaps on size 1000000: "+swapsComparisons[0]);
         System.out.println("Bubble comparisons on size 1000000: "+swapsComparisons[1]);
 
-        
+        */
 
 
         //System.out.println(Arrays.toString(array));
