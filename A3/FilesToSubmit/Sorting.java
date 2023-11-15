@@ -19,9 +19,17 @@ public class Sorting{
     //A two item long[] array is returned holding [swaps,comparisons]
     public static long[] bubbleSort(int[] arr){
         int n = arr.length-1;
+
+        //counts the total swaps
         long swaps = 0;
+
+        //counts the swaps during a single run of the bubble sort for loop
         long swapsThisRun = 0;
+
+        //counts the comparisons
         long comparisons = 0;
+
+        //Gets the swaps and comparisons done within the insertion sort
         long swapsComparisons[] = new long[]{0,0};
 
         //Using a partially sorted array means the bubble sort exits far more quickly
@@ -36,6 +44,8 @@ public class Sorting{
         
 
         for (int x = n; x>0; x--){
+
+            //This variable always starts at 0 to count the number of comparisons
             swapsThisRun = 0;
             for(int i = 0; i<x; i++){
                 comparisons++;
@@ -44,9 +54,10 @@ public class Sorting{
                     swapsThisRun++;
                 }
             }
+            //If no swaps were performed in an iteration of the outer loop, the list is fully sorted
             if (swapsThisRun==0){
-                //Breaking here brings down the number of comparisons
-                break;
+                //Breaking here brings down the number of comparisons and greatly improves runtime
+                return new long[]{swaps,comparisons};
             }else{
                 swaps+=swapsThisRun;
             }
@@ -56,11 +67,17 @@ public class Sorting{
 
 
     public static long[] selectionSort(int[] arr,int start,int end){
+        //These variables store the same information as those by the same name in the bubble sort
         long comparisons = 0;
         long swaps = 0;
         long swapsComparisons[] = new long[]{swaps,comparisons};
+
+        //holds the minimum unsorted array element
         int minimum;
 
+
+        //THIS OPTIMIZATION SHOULD NOT BE USED IF SWAPS ARE VERY EXPENSIVE!
+        //if the sub array is greater than 100, selection sort is called on both halves of the array
         if((end-start)>100){
             int mid = (start+end)/2;
 
@@ -72,6 +89,7 @@ public class Sorting{
             swaps+=swapsComparisons[0];
             comparisons+=swapsComparisons[1];
             
+            //Once the size <=100 subarrays are sorted, they will be merged together
             merge(arr, new int[arr.length], start, end, mid);
         }else{
 
@@ -83,7 +101,7 @@ public class Sorting{
                         minimum=j;   
                     }
                 }
-                //This improvement is only helpful
+                //This improvement is helpful
                 //when swaps are expensive.
                 if(minimum!=i){
                     swap(arr,i,minimum);
@@ -97,15 +115,12 @@ public class Sorting{
         
     }
 
-
-    //Is shellsort a good improvement?
-    //maybe look at characteristics of the data to decide on the increment?
-    //maybe do Lemon's improvement?
-    //consider doing insertionsort for the first half of the array.
+    //This optimization uses shellsort to partially sort the array. Shellsort will be called to run this algorithm
     public static long[] insertionSort(int[] arr,int incr){
         int n = arr.length;
         long swaps = 0;
         long comparisons = 0;
+
         int i;
         int j;
 
@@ -140,33 +155,74 @@ public class Sorting{
         return new long[]{swaps,comparisons};
     }
 
+
     public static long[] quickSort(int[] arr, int start, int end){
+        //these variables are the same as above
         long swaps = 0;
         long comparisons = 0;
+
+        //holds swaps, comparisons, and pivot index
         long[] swapsComparisonsPivot = new long[]{0,0,0};
 
+        //If the array is small, use insertionsort
         if(end-start<10){
             long[] swapsComparisons = insertionSort(arr, start, end);
             swaps+=swapsComparisons[0];
             comparisons+=swapsComparisons[1];
         }else{
+            //finds the pivot, adding to swaps/comparisons counters
             swapsComparisonsPivot = pivotHelper(arr, start, end);
             int pivot = (int)swapsComparisonsPivot[2];
             swaps+= swapsComparisonsPivot[0];
             comparisons+=swapsComparisonsPivot[1];
 
+            //calls itself on either side of the pivot(pivot excluded)
             quickSort(arr,start,pivot);            
             quickSort(arr,pivot+1,end);
         }
         return new long[]{swaps,comparisons};
     }
 
-    public static long[] pivotHelper(int[] arr, int start, int end){
-        int pivotCount = start;
-        int pivot=arr[start];
-        long swaps = 0;
-        long comparisons = 0;
+    //Finds the median of first, middle, and last indices and swaps their elements
+    //returns the maximum number of comparisons and number of swaps
+    //THIS IS HELPFUL WHEN THE ARRAY OR SUB ARRAYS MAY BE IN SORTED ORDER
+    public static long[] findPivot(int[] arr, int start, int end){
+        end = end-1;
+        int mid = (start+end)/2;
 
+        //middle element is the median
+        if ((arr[start] < arr[mid] && arr[mid] < arr[end]) || (arr[end] < arr[mid] && arr[mid] < arr[start])){
+            swap(arr,start,mid);
+            return new long[]{1,4};
+        }
+
+        //first element is the median
+        else{
+            if ((arr[mid] < arr[start] && arr[start] < arr[end]) || (arr[end] < arr[start] && arr[start] < arr[mid]))
+        return new long[]{0,8};
+        }
+    
+        //last element is the median
+        swap(arr,start,end);
+        return new long[]{1,8};
+
+    }
+
+    public static long[] pivotHelper(int[] arr, int start, int end){
+        //gets the pivot element to the start
+        long[] swapsComparisons = findPivot(arr, start, end);
+
+        //this counts the number of elements before the pivot
+        int pivotCount = start;
+
+        //sets pivot
+        int pivot=arr[start];
+
+        //as above
+        long swaps = swapsComparisons[0];
+        long comparisons = swapsComparisons[1];
+
+        //moves all elements smaller than the pivot to before the pivot. keeping track of how many were moved
         for(int i=start+1;i<end;i++){
             comparisons++;
             if (pivot>arr[i]){
@@ -178,6 +234,7 @@ public class Sorting{
         swaps++;
         swap(arr,start,pivotCount);
 
+        //converts pivot index to long for returnability
         long longpc = (long) pivotCount;
 
         return new long[]{swaps,comparisons,longpc};
@@ -371,9 +428,7 @@ public class Sorting{
         long[] swapsComparisons = bubbleSort(array1);
         System.out.println("Bubble swaps on size 100: "+swapsComparisons[0]);
         System.out.println("Bubble comparisons on size 100: "+swapsComparisons[1]);
-        //System.out.println(Arrays.toString(array1));
-        //System.out.println();
-
+        
         int[] array2 = makeArray(1000, 1, 9999);
         swapsComparisons = bubbleSort(array2);
         System.out.println("Bubble swaps on size 1000: "+swapsComparisons[0]);
@@ -399,8 +454,6 @@ public class Sorting{
         swapsComparisons = selectionSort(array,0,array.length);
         System.out.println("selection swaps on size 100: "+swapsComparisons[0]);
         System.out.println("selection comparisons on size 100: "+swapsComparisons[1]);
-        //System.out.println(Arrays.toString(array));
-        //System.out.println();
 
         array = makeArray(1000, 1, 9999);
         swapsComparisons = selectionSort(array,0,array.length);
@@ -429,8 +482,6 @@ public class Sorting{
         swapsComparisons = mergeSort(array,temp,0,array.length);
         System.out.println("merge swaps on size 100: "+swapsComparisons[0]);
         System.out.println("merge comparisons on size 100: "+swapsComparisons[1]);
-        //System.out.println(Arrays.toString(array));
-        //System.out.println();
 
         array = makeArray(1000, 1, 9999);
         temp = new int[1000];
@@ -460,8 +511,6 @@ public class Sorting{
         swapsComparisons = shellSort(array);
         System.out.println("insertion optimized/shell swaps on size 100: "+swapsComparisons[0]);
         System.out.println("insertion optimized/shell comparisons on size 100: "+swapsComparisons[1]);
-        //System.out.println(Arrays.toString(array));
-        //System.out.println();
 
         array = makeArray(1000, 1, 9999);
         swapsComparisons = shellSort(array);
@@ -487,8 +536,6 @@ public class Sorting{
         swapsComparisons = quickSort(array,0,array.length);
         System.out.println("quick swaps on size 100: "+swapsComparisons[0]);
         System.out.println("quick comparisons on size 100: "+swapsComparisons[1]);
-        //System.out.println(Arrays.toString(array));
-        //System.out.println();
 
         array = makeArray(1000, 1, 9999);
         swapsComparisons = quickSort(array,0,array.length);
@@ -510,12 +557,6 @@ public class Sorting{
         System.out.println("quick swaps on size 1000000: "+swapsComparisons[0]);
         System.out.println("quick comparisons on size 1000000: "+swapsComparisons[1]);
 
-        
-
-        
-
-
-        //System.out.println(Arrays.toString(array));
     }
 
 }
