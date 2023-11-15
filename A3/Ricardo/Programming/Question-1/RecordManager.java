@@ -10,6 +10,7 @@ public class RecordManager {
     public static void sortRecords(List<Employee> employees, Comparator<Employee> comparator) {
         // sort employees based on their IDs 
          HeapSort.sort(employees, comparator);
+         fillTreeWithEmployees(employees);
     }
 
     public static void displayRecords(List<Employee> employees) {
@@ -19,12 +20,29 @@ public class RecordManager {
         }
     }
 
-    public static void addRecord(List<Employee> employees, Employee employee) {
-        // add employee to the list
-         employees.add(employee);
-        tree.insert(employee); // add to the binary tree
-        HeapSort.sort(employees, comparator); // sort the list again
+    public static void displayTree(){
+        tree.inOrderTraversal();
     }
+
+
+    public static void fillTreeWithEmployees(List<Employee> employees) {
+        // clearing tree records
+        tree.clear(); 
+        for (Employee emp : employees) {
+            tree.insert(emp);
+        }
+    }    
+
+    public static void addRecord(List<Employee> employees, Employee employee) {
+        // checking if the employee already exists in the tree to avoid duplicates
+        if (tree.search(employee) == null) {
+            tree.insert(employee); // adding to the binary tree
+        } else {
+            System.out.println("Employee with ID " + employee.getEmployeeId() + " already exists.");
+        }
+    }
+    
+    
 
     public static Employee searchRecord(String employeeId) {
         Employee dummyEmployee = new Employee(employeeId); // create a dummy employee with the ID
@@ -33,22 +51,16 @@ public class RecordManager {
     
 
     public static void updateRecord(List<Employee> employees, String employeeId, Employee updatedEmployee) {
-        // find and update the employee in the list
-        for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).getEmployeeId().equals(employeeId)) {
-                // update the binary tree
-                tree.delete(employees.get(i)); // remove old employee from the tree
-                tree.insert(updatedEmployee); // add updated employee to the tree
-
-                employees.set(i, updatedEmployee); // update the list
-                break;
-            }
-        }
-        // Re-sort the list
-        HeapSort.sort(employees, comparator);
-
+        // use the tree's update method to update the record
+        tree.updateRecord(employees, tree, employeeId, updatedEmployee, comparator);
     }
     
+    
+    
+public static void delete(String employeeId){
+    Employee deleteRecord = new Employee(employeeId);
+    tree.delete(deleteRecord);
+}    
 
     
 }

@@ -24,22 +24,28 @@ public class Employee implements Comparable<Employee> {
         return this.employeeId.compareTo(other.employeeId);
     }
 
-    // Overriding toString method for better readability when printing Employee objects
+    // overriding toString method for better readability when printing objects
     @Override
     public String toString() {
         return "Employee{" +
-               "employeeId='" + employeeId + '\'' +
-               ", name='" + name + '\'' +
-               ", department='" + department + '\'' +
-               ", address='" + address + '\'' +
-               ", salary=" + salary +
-               '}';
+                "employeeId='" + employeeId + '\'' +
+                ", SIN='" + SIN + '\'' +
+                ", name='" + name + '\'' +
+                ", department='" + department + '\'' +
+                ", address='" + address + '\'' +
+                ", salary=" + salary +
+                '}';
     }
 
     //will return employee 
     public String getEmployeeId() {
         return this.employeeId;
     }
+
+    public String getSIN() {
+        return this.SIN;
+    }
+
 
     // overloaded constructor for search operations
     public Employee(String employeeId) {

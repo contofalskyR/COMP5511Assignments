@@ -1,4 +1,5 @@
-E003, SIN001, John Doe, HR, 123 Street, 50000
-E004, SIN001, John Doe, HR, 123 Street, 50000
-E001, SIN002, Jane Smith, IT, 456 Avenue, 60000
-E002, SIN003, Alice Johnson, Sales, 789 Boulevard, 55000
+Employee-ID, SIN, Name, Department, Address, Salary
+E003, SIN003, John Doe, HR, 123 Street, 50000
+E004, SIN004, Jame Brown, HR, 123 Street, 50000
+E001, SIN001, Jane Smith, IT, 456 Avenue, 60000
+E002, SIN002, Alice Johnson, Sales, 789 Boulevard, 55000

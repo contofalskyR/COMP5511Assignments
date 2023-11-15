@@ -142,7 +142,23 @@ class BinaryTree<T extends Comparable<T>> {
 }
 
 
+    // clearing the tree 
+    public void clear() {
+        root = null;
+    }
 
+    //public binary tree class 
+    public void inOrderTraversal() {
+        inOrderTraversal(this.root);
+    }
 
-    
+    //display records
+    private void inOrderTraversal(Node<T> node) {
+        if (node != null) {
+            inOrderTraversal(node.left);
+            System.out.println(node.key);
+            inOrderTraversal(node.right);
+        }
+    }
+
 }

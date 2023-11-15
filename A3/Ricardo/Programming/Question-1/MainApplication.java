@@ -8,28 +8,32 @@ import java.util.Comparator;
 public class MainApplication {
 
     public static void main(String[] args) {
+        
         //Read records from file 
         List<Employee> employees = EmployeeFileReader.readEmployeesFromFile("employee.txt");
+        //Populating the tree  
+
         System.out.println("Unsorted employees:");
         RecordManager.displayRecords(employees); 
 
         // Sort and display initial records
-        RecordManager.sortRecords(employees, Comparator.comparing(Employee::getEmployeeId));
+        // RecordManager.sortRecords(employees, Comparator.comparing(Employee::getEmployeeId));
+        RecordManager.sortRecords(employees, Comparator.comparing(Employee::getSIN));
         System.out.println("\nSorted Employees:");
         RecordManager.displayRecords(employees); 
 
         // Add a new record
-        Employee newEmployee = new Employee("E005", "123456789", "New Employee", "Engineering", "123 Address St", 50000.0);
+        Employee newEmployee = new Employee("E005", "SIN000", "New Employee", "Engineering", "123 Address St", 50000.0);
         RecordManager.addRecord(employees, newEmployee);
         System.out.println("\nSorted Employees + new record:");
-        RecordManager.displayRecords(employees); 
+        RecordManager.displayTree(); 
 
 
         // Search for a record 
-        Employee employee = RecordManager.searchRecord("E001");
+        Employee employee = RecordManager.searchRecord("E005");
         if (employee != null) {
             // Employee found, print details
-            System.out.println("Employee Found:");
+            System.out.println("\nEmployee Found:");
             System.out.println("Employee ID: " + employee.employeeId);
             System.out.println("SIN: " + employee.SIN);
             System.out.println("Name: " + employee.name);
@@ -40,13 +44,24 @@ public class MainApplication {
             // Employee not found
             System.out.println("Employee with ID E001 not found.");
         }
-    
 
-        // Update a record (assuming you have an update implementation)
-        // Employee updatedEmployee = new Employee("E002", "Jane Smith", "Executive", "456 Avenue", 65000);
-        // RecordManager.updateRecord(employees, employeeTree, "E002", updatedEmployee, Comparator.comparing(Employee::getEmployeeId));
-        // System.out.println("\nAfter Updating Record:");
-        // RecordManager.displayRecords(employees);
+        // Update a record 
+            Employee updateEmployee = new Employee("E005", "123456789", "Updated Employee", "Engineering", "123 Address St", 50000.0);
+            RecordManager.updateRecord(employees, "E005", updateEmployee);
+            System.out.println("\nDisplaying updated records:");
+            RecordManager.displayTree(); 
+
+        
+        // Delete a record 
+        RecordManager.delete("E005");
+        System.out.println("\nDisplaying updated records after deleting E005:");
+
+        RecordManager.displayTree(); 
+
+
+    // Add interface 
+
+   
     }
 
     // will read records from the book.txt file
@@ -71,40 +86,43 @@ public class MainApplication {
 
     // will read records from the employee.txt file and convert into a list of Employee objects
     public class EmployeeFileReader {
-
-           public static List<Employee> readEmployeesFromFile(String fileName) {
-        List<Employee> employees = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // skip empty lines.
-                if (line.trim().isEmpty()) {
-                    continue;
+        public static List<Employee> readEmployeesFromFile(String fileName) {
+            List<Employee> employees = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                // Read and discard the first line (header)
+                String headerLine = reader.readLine();
+    
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // skip empty lines.
+                    if (line.trim().isEmpty()) {
+                        continue;
+                    }
+                    String[] fields = line.split(",");
+                    if (fields.length != 6) { // ensure that there are exactly 6 fields per employee record
+                        System.err.println("Invalid employee record: " + line);
+                        continue;
+                    }
+                    // parse the fields and create a new Employee object.
+                    Employee employee = new Employee(
+                        fields[0].trim(), // Employee-ID
+                        fields[1].trim(), // SIN
+                        fields[2].trim(), // Name
+                        fields[3].trim(), // Department
+                        fields[4].trim(), // Address
+                        Double.parseDouble(fields[5].trim()) // Salary
+                    );
+                    employees.add(employee);
                 }
-                String[] fields = line.split(",");
-                if (fields.length != 6) { // ensure that there are exactly 6 fields per employee record
-                    System.err.println("Invalid employee record: " + line);
-                    continue;
-                }
-                // parse the fields and create a new Employee object.
-                Employee employee = new Employee(
-                    fields[0].trim(), // Employee-ID
-                    fields[1].trim(), // SIN
-                    fields[2].trim(), // Name
-                    fields[3].trim(), // Department
-                    fields[4].trim(), // Address
-                    Double.parseDouble(fields[5].trim()) // Salary
-                );
-                employees.add(employee);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NumberFormatException e) {
+                System.err.println("There was an error parsing the salary. Please check the input file format.");
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NumberFormatException e) {
-            System.err.println("There was an error parsing the salary. Please check the input file format.");
-            e.printStackTrace();
+            return employees;
         }
-        return employees;
+        
     }
     
-    }
 }
