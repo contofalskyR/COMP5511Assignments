@@ -3,18 +3,34 @@ import java.util.Comparator;
 
 public class RecordManager {
     // class level variables 
+    private static boolean isInitialSortDone = false;
     private static BinaryTree<Employee> tree = new BinaryTree<>();
-    private static Comparator<Employee> comparator = Comparator.comparing(Employee::getEmployeeId);
+ 
 
 
-    public static void sortRecords(List<Employee> employees, Comparator<Employee> comparator) {
-        // sort employees based on their IDs 
-         HeapSort.sort(employees, comparator);
-         fillTreeWithEmployees(employees);
+    private static String lastUsedCriterion = null;
+
+    public static void sortRecords(List<Employee> employees, String criterion) {
+    // checks if the current tree matches with previous criterion used to sort the tree
+    if (lastUsedCriterion == null || !lastUsedCriterion.equals(criterion)) {
+        lastUsedCriterion = criterion;
+        Employee.setComparisonCriterion(criterion.equals("SIN") ? "SIN" : "EmployeeID");
+
+        // clear the tree and repopulate it
+        tree.clear();
+        HeapSort.sort(employees);             
+        fillTreeWithEmployees(employees);
     }
+
+    // display the sorted tree
+    System.out.println("Sorted employees:");
+    displayTree();
+    }
+    
 
     public static void displayRecords(List<Employee> employees) {
         //display all records
+        tree.clear();
         for (Employee emp : employees) {
             System.out.println(emp); 
         }
@@ -26,8 +42,7 @@ public class RecordManager {
 
 
     public static void fillTreeWithEmployees(List<Employee> employees) {
-        // clearing tree records
-        tree.clear(); 
+        // fill the tree with employees
         for (Employee emp : employees) {
             tree.insert(emp);
         }
@@ -42,25 +57,43 @@ public class RecordManager {
         }
     }
     
-    
-
     public static Employee searchRecord(String employeeId) {
+
         Employee dummyEmployee = new Employee(employeeId); // create a dummy employee with the ID
         return tree.search(dummyEmployee); // use the tree's search method to find the actual employee
+        
+
     }
     
 
-    public static void updateRecord(List<Employee> employees, String employeeId, Employee updatedEmployee) {
-        // use the tree's update method to update the record
-        tree.updateRecord(employees, tree, employeeId, updatedEmployee, comparator);
+    public static void updateRecord(String employeeId, Employee updatedEmployee) {
+        // temporarily sets the comparison criterion to "EmployeeID" for this particular action
+        String originalCriterion = Employee.getComparisonCriterion(); // Assuming a getter method exists
+        Employee.setComparisonCriterion("EmployeeID");
+
+        // Perform the update
+        Employee targetEmployee = searchRecord(employeeId);
+        if (targetEmployee != null) {
+            tree.updateRecord(employeeId, updatedEmployee);
+            System.out.println("Employee updated successfully.");
+        } else {
+            System.out.println("Employee with ID " + employeeId + " not found.");
+        }
+
+        // restores the original comparison criterion
+        Employee.setComparisonCriterion(originalCriterion);
     }
     
     
+    public static void delete(String employeeId){
+        String originalCriterion = Employee.getComparisonCriterion();
+        Employee.setComparisonCriterion("EmployeeID");
     
-public static void delete(String employeeId){
-    Employee deleteRecord = new Employee(employeeId);
-    tree.delete(deleteRecord);
-}    
-
+        Employee deleteRecord = new Employee(employeeId);
+        tree.delete(deleteRecord);
+    
+        Employee.setComparisonCriterion(originalCriterion); // restore original criterion
+    }
+    
     
 }
