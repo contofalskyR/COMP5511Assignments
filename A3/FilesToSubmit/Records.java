@@ -32,6 +32,7 @@ public class Records{
         this.records = new Record[size];
         this.totalRecords = 0;
         String data;
+        BSTRoot = null;
 
         //opens the scanner and reads the file, adding applicable records to database
         try {
@@ -550,13 +551,14 @@ public class Records{
     }
 
     //constructs a BST from a sorted array. field sorted by must be unique.
-    //could be easily changed to accommodate repeating values, but this would 
-    //increase the time complexity, as each record would need to be inserted using 
-    //the insertToBST method
+    //could be easily changed to accommodate repeating values.
     public Node constructBST(Record[] records, int start, int end){
 
-        //heapsorts the array of records based on SIN
-        heapSort(1);
+        //heapsorts the array of records based on SIN on the first pass
+        if(start==0 && end ==totalRecords-1){
+            heapSort(1);
+        }
+        
 
         if (start>end){
             return null;
@@ -565,7 +567,7 @@ public class Records{
         //create Node with median
         //for both sides around median, do the same until subarray is empty
         int median = (start+end)/2;
-        Node root = new Node(records[median]);
+        Node root = insertToBST(records[median], BSTRoot);
         root.left = (constructBST(records, start, median-1));
         root.right = (constructBST(records, median+1, end));
         return root;
