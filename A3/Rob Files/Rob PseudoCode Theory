@@ -6,7 +6,7 @@ Function mergingTrees(T1, T2):
     If T2 is empty:
         Return T1
 
-    // Confirming that T1 has the smallest root */ 
+    // Confirming that T1 has the smallest root through comparison and swapping */ 
     If root(T1) > root(T2):
         Swap T1 with T2
 
@@ -16,10 +16,10 @@ Function mergingTrees(T1, T2):
     mergedRoot.leftChild = mergingTrees(leftChild(T1), T2)
 
     // Iteratively adjust the heap order if necessary */ 
-    iterativeHeapify(mergedRoot) // Adjusted to use iterative heapify */ 
+    iterativeHeapify(mergedRoot) // Adjusted to use iterative heap restructuring */ 
     Return mergedRoot
 
-// Adjusted Function iterativeHeapify(node): 
+// Adjusted Function iterative heap restructuring(node): 
 Function iterativeHeapify(node):
     While node is not null:
         smallest = node
