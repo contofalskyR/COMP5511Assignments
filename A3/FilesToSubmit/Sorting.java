@@ -559,4 +559,10 @@ public class Sorting{
 
     }
 
+    // Hardware Details 
+    System.out.println("\nHardware used for evaluation: Macbook M2 Air");
+    System.out.println("CPU: [Apple M2 (ARM-Based SoC): 8 CPU Cores]");
+    System.out.println("RAM: [8 GB]");
+    System.out.println("Java Version: " + System.getProperty("java.version"));
+
 }
