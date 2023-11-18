@@ -123,6 +123,22 @@ public void writeRecordToFile(String data){
         //remove from sorted 
         //remove from bst
     }
+
+    employees.addRecordToSorted("TJONES0567, 998301928, Thomas Jones, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("ABC0567, 123456787, ABC, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("CDE567, 123456785, CDE, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("ZZZ567, 123456788, ZZZ, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("LMQ, 123456783, LMK, Operations, 202 Operations Road, 68000");
+
+    employees.updateRecord(stringToRecord("ABC0567, 123456787, ABC, Operations, 202 Operations Road, 68000"), stringToRecord("ABC67810, 123456787, ABCGF, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ABC0567, 123456787, ABC, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ZZZ567, 123456788, ZZZ, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ZZZ567, 123456788, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ABC0567, 123456787, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("CDE567, 123456785, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ABC0567, 123456789, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.printRecords();
+    //employees.printRecords();
  
     public void heapDown(String field, int i, int bottom){
         int left = 2*i+1;

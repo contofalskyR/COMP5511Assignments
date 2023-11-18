@@ -1,0 +1,3 @@
+Employee-ID, SIN, Name, Department, Address, Salary
+RJOHNS0789, 654321789, Robert Johnson, Sales, 101 Sales Lane, 70000
+LDAVIS0234, 789012345, Lisa Davis, Finance, 456 Finance Street, 55000

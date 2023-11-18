@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public class Records{
     Record[] records;
@@ -62,8 +63,10 @@ public class Records{
 
     public void addRecord(String data){
         Record record;
-
         record = stringToRecord(data);
+        if(record==null){
+            return;
+        }
         records[totalRecords]=record;
         totalRecords++;  
         if(size==totalRecords){
@@ -102,6 +105,9 @@ public class Records{
     }
 
     public void addRecordToSorted(Record record){
+        if(record==null){
+            return;
+        }
         String insertRec = record.recordArr[sortedBy];
 
         int index = getArrayIndex(insertRec);
@@ -115,6 +121,9 @@ public class Records{
 
     public void addRecordToSorted(String data){
         Record record = stringToRecord(data);
+        if(record==null){
+            return;
+        }
         String insertRec = record.recordArr[sortedBy];
 
         int index = getArrayIndex(insertRec);
@@ -173,10 +182,10 @@ public class Records{
 
 
     public Node findRecord(int field, String fieldValue){
-
         Node currNode = BSTRoot;
         while(currNode!=null){
             String currVal = currNode.record.recordArr[field];
+            System.out.println(currVal);
             if(currVal.equals(fieldValue)){
                 return currNode;
             }
@@ -190,8 +199,29 @@ public class Records{
     }
 
     public void printRecord(String field, String fieldValue){
-        int fieldIndex = fieldIndex(field);
-        Node foundRecord = findRecord(fieldIndex, fieldValue);
+        if(field=="EmployeeID"){
+            int start = 0;
+            int end = totalRecords-1;
+            int mid = (start+end)/2;
+            while(start<=end){
+                if(fieldValue.compareTo(records[mid].EmployeeID)>0){
+                    start=mid+1;
+                    mid = (start+end)/2;
+                }else{
+                    if(fieldValue.compareTo(records[mid].EmployeeID)<0){
+                        end=mid-1;
+                        mid = (start+end)/2;
+                    }else{
+                        printFields(records[mid]);
+                        System.out.println("Record found: ");
+                        return;
+                    }
+                }
+
+            }System.out.println("record not found");
+            return;
+        }
+        Node foundRecord = findRecord(1, fieldValue);
         if(foundRecord==null){
             System.out.println("record not found");
         }else{
@@ -201,6 +231,9 @@ public class Records{
     }
 
     public int deleteRecord(Record record){
+        if(record==null){
+            return 0;
+        }
         String insertRec = record.recordArr[sortedBy];
         String arrRec;
         int start = 0;
@@ -298,6 +331,9 @@ public class Records{
     }
 
     public void updateRecord(Record oldRecord, Record newRecord){
+        if(newRecord==null){
+            return;
+        }
         if(deleteRecord(oldRecord)==0){
             System.out.println("Record to update does not exist");
         }else{
@@ -309,13 +345,19 @@ public class Records{
 
     public static Record stringToRecord(String data){
         Scanner scanner = new Scanner(data).useDelimiter(",\\s*");
-        Record record = new Record(scanner.next(),  
+        try{
+            Record record = new Record(scanner.next(),  
             scanner.next(), 
             scanner.next(), 
             scanner.next(),
             scanner.next(), 
             scanner.next());
         return record;
+        }catch(NoSuchElementException e){
+            System.out.println("Uh oh, you didn't put the right number of fields");
+            return null;
+        }
+
         //deal with full 
     }
 
@@ -455,23 +497,29 @@ public class Records{
         Scanner scanner = new Scanner(System.in);
         Records employees = new Records(50, "records.txt");
 
-        System.out.println("Please input the number corresponding to one of the following options:");
-        System.out.println("1) Print records");
-        System.out.println("2) Add a record");
-        System.out.println("3) Delete a record");
-        System.out.println("4) Find a specific record");
-        System.out.println("5) Update a record");
-        System.out.println("Type any other character to quit the program");
 
-        String input = scanner.next();
+
+        String input;
         String input2;
 
         while(true){
+            System.out.println("\nPlease input the number corresponding to one of the following options:");
+            System.out.println("1) Print records");
+            System.out.println("2) Add a record");
+            System.out.println("3) Delete a record");
+            System.out.println("4) Find a specific record");
+            System.out.println("5) Update a record");
+            System.out.println("Type any other character to quit the program");
+            input = scanner.next();
+            scanner.nextLine();
+
+
+
             switch(input){
                 case "1":
                     System.out.println("Select 1 to print by EmployeeID or 2 to print by SIN number");
                     input2 = scanner.next();
-                    if(input2 == "2"){
+                    if(input2.endsWith("2")){
                         employees.printInOrder(employees.BSTRoot);
                     }else{
                         employees.printRecords();
@@ -480,43 +528,54 @@ public class Records{
                 case"2":
                     System.out.println("Input your record, comma separated, in the following order: ");
                     System.out.println("Employee-ID, SIN, Name, Department, Address, Salary");
-                    input2 = scanner.nextLine();
-                    //deal with invalid input in string to record
-                    employees.addRecord(input2);
+                    input2=scanner.nextLine();
+                    employees.addRecordToSorted(input2);
                     break;
                 case "3":
                     System.out.println("Input the record you would like to delete, comma separated, in the following order: ");
                     System.out.println("Employee-ID, SIN, Name, Department, Address, Salary");
                     input2 = scanner.nextLine();
                     Record record = employees.stringToRecord(input2);
+                    System.out.println();
                     employees.deleteRecord(record);
                     break;
                 case"4":
                     System.out.println("Select 1 to search by EmployeeID or 2 to search by SIN number");
                     input2 = scanner.next();
-                    if(input2 == "2"){
+                    if(input2.equals("2")){
                         System.out.println("Input the SIN number you are searching for: ");
                         String input3 = scanner.next();
-                        employees.printRecord("SIN",input3);
+                        System.out.println();
+                        employees.printRecord("SIN",input3.strip());
                     }else{
                         System.out.println("Input the EmployeeID you are searching for: ");
                         String input3 = scanner.next();
-                        employees.printRecord("EmployeeID", input3);
+                        System.out.println();
+                        employees.printRecord("EmployeeID", input3.strip());
                     }
+                    break;
 
                 case "5":
-                    System.out.println("Input the record you would like to update, comma separated, in the following order: ");
-                    System.out.println("Employee-ID, SIN, Name, Department, Address, Salary");
+                    System.out.println("Input the SIN number of the record you would like to update: ");
                     input2 = scanner.nextLine();
-                    Record r1 = employees.stringToRecord(input2);
+                    Node node = employees.findRecord(1, input2);
+                    if(node==null){
+                        System.out.println("Uh oh, there isn't a record with that sin number");
+                        break;
+                    }
+
+                    Record r1 = node.record;
+                    
                     System.out.println("Input the updated record, comma separated, in the following order: ");
                     System.out.println("Employee-ID, SIN, Name, Department, Address, Salary");
                     String input3 = scanner.nextLine();
                     Record r2 = employees.stringToRecord(input3);
                     employees.updateRecord(r1,r2);
+                    break;
+
                 default:
                 System.out.println("GoodBye!");
-                break;                    
+                return;                    
 
             }
         }
@@ -527,13 +586,7 @@ public class Records{
     }
 
     public static void main(String[] args){
-        
         runSystem();
-        //employees.heapSort("EmployeeID");
-        //employees.printRecords();
-        //printFields(employees.getRecord("EmployeeID", "DCP0123"));
-        
-        
     }
 
 }
