@@ -557,12 +557,12 @@ public class Sorting{
         System.out.println("quick swaps on size 1000000: "+swapsComparisons[0]);
         System.out.println("quick comparisons on size 1000000: "+swapsComparisons[1]);
 
-    }
+        // Hardware Details 
+        System.out.println("\nHardware used for evaluation: Macbook M2 Air");
+        System.out.println("CPU: [Apple M2 (ARM-Based SoC): 8 CPU Cores]");
+        System.out.println("RAM: [8 GB]");
+        System.out.println("Java Version: " + System.getProperty("java.version"));
 
-    // Hardware Details 
-    System.out.println("\nHardware used for evaluation: Macbook M2 Air");
-    System.out.println("CPU: [Apple M2 (ARM-Based SoC): 8 CPU Cores]");
-    System.out.println("RAM: [8 GB]");
-    System.out.println("Java Version: " + System.getProperty("java.version"));
+    }
 
 }
