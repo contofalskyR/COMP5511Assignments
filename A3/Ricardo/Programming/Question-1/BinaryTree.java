@@ -1,11 +1,10 @@
 import java.util.List;
 import java.util.Comparator;
 
-// Including a Comparable interface
 class BinaryTree<T extends Comparable<T>> {
     private Node<T> root; 
 
-     public BinaryTree() {
+    public BinaryTree() {
         this.root = null;
     }
 
@@ -25,31 +24,21 @@ class BinaryTree<T extends Comparable<T>> {
         root = insertRec(root, key);
     }
 
-    
 
     private Node<T> insertRec(Node<T> root, T key) {
-        // check if it is null 
         if (root == null) {
-            root = new Node<>(key);
-            return root;
+            return new Node<>(key);
         }
-
-        //Inserting the new key into the tree and perform a recursive call to find the location 
-        //finding the correct position in the tree for the new key 
-        // if key is less than root key the method will call itself recursively for the left subtree 
-        // if key is more than the root key the method will call itself recusively for the right subtree 
-        if (key.compareTo(root.key) < 0) {
+        int cmp = key.compareTo(root.key);
+        if (cmp < 0) {
             root.left = insertRec(root.left, key);
-        } else if (key.compareTo(root.key) > 0) {
-            // 
+        } else if (cmp > 0) {
             root.right = insertRec(root.right, key);
         }
-
         return root;
     }
+    
 
-
-    // In BinaryTree class
     public T search(T key) {
         Node<T> resultNode = searchRec(root, key);
         return resultNode == null ? null : resultNode.key;
@@ -83,16 +72,17 @@ class BinaryTree<T extends Comparable<T>> {
             return null;
         }
 
-        // Find the node that we need to delete 
+        // find the node that we need to delete 
         // if the key is less that the current node key it means the node to delete is on the left side 
         // if the key is more that the current node key it means the node to delete is on the right side 
-
+        System.out.println("Key you wish to delete");
+        System.out.println(root.key);
         if (key.compareTo(root.key) < 0) {
             root.left = deleteRec(root.left, key);
         } else if (key.compareTo(root.key) > 0) {
             root.right = deleteRec(root.right, key);
         } else {
-            // Node with only one child or no child
+            // node with only one child or no child
             // if node to be deleted has no childre it means we are working with a leaf node 
             if (root.left == null) {
                 return root.right;
@@ -112,7 +102,7 @@ class BinaryTree<T extends Comparable<T>> {
         
     }
 
-    // Finding the smallest key in the subtree needed to find the inorder successor during deletion 
+    // finding the smallest key in the subtree needed to find the inorder successor during deletion 
     private T minValue(Node<T> root) {
         T minv = root.key;
         while (root.left != null) {
@@ -122,27 +112,44 @@ class BinaryTree<T extends Comparable<T>> {
         return minv;
     }
 
-    public static void updateRecord(List<Employee> employees, BinaryTree<Employee> tree, String employeeId, Employee updatedEmployee, Comparator<Employee> comparator) {
-    // find the employee in the list and update details
-    for (int i = 0; i < employees.size(); i++) {
-        if (employees.get(i).getEmployeeId().equals(employeeId)) {
-            // if the employee ID is being changed, update the binary tree
-            if (!employeeId.equals(updatedEmployee.getEmployeeId())) {
-                tree.delete(employees.get(i)); // remove old employee from the tree
-                tree.insert(updatedEmployee); // add updated employee to the tree
-            }
+    public void updateRecord(String employeeId, T updatedEmployee) {
+        root = updateRec(root, employeeId, updatedEmployee);
+    }
 
-            employees.set(i, updatedEmployee); // update the list
-            break;
+    private Node<T> updateRec(Node<T> root, String employeeId, T updatedEmployee) {
+        if (root == null) {
+            return null;
+        }
+        Employee rootEmployee = (Employee) root.key;
+        int cmp = employeeId.compareTo(rootEmployee.getEmployeeId());
+        if (cmp < 0) {
+            root.left = updateRec(root.left, employeeId, updatedEmployee);
+        } else if (cmp > 0) {
+            root.right = updateRec(root.right, employeeId, updatedEmployee);
+        } else {
+            // node found, update it
+            root.key = updatedEmployee;
+        }
+        return root;
+    }
+
+    // clearing the tree 
+    public void clear() {
+        root = null;
+    }
+
+    //public binary tree class 
+    public void inOrderTraversal() {
+        inOrderTraversal(this.root);
+    }
+
+    //display records
+    private void inOrderTraversal(Node<T> node) {
+        if (node != null) {
+            inOrderTraversal(node.left);
+            System.out.println(node.key);
+            inOrderTraversal(node.right);
         }
     }
 
-    // re-sort the list if necessary
-    HeapSort.sort(employees, comparator);
-}
-
-
-
-
-    
 }
