@@ -1,4 +1,84 @@
+public void writeRecordToFile(String data){
+    FileWriter writer = null;
+    try{
+        writer = new FileWriter(file, true);
+        writer.write("\n"+data);
+    } catch (IOException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            writer.close();
 
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+}
+
+
+    //Some fields may have multiple variables
+    //with the same value
+    public Record getRecord(String field, String value){
+        int fieldIndex = fieldIndex(field);
+        Node currNode = BSTRoot;
+        String currField;
+
+        
+        while(currNode != null){
+            currField = currNode.record.recordArr[fieldIndex];
+            if(currField.compareTo(value)==0){
+                return currNode.record;
+            }            
+            if(currField.compareTo(value)>0){
+                currNode = currNode.left;
+            }
+            else{
+                currNode = currNode.right;
+            }
+        }
+        return null;
+    }
+
+    Record record = stringToRecord(data);
+    String toInsert = record.recordArr[sortedBy];
+    Node currNode = BSTRoot;
+    Node prevNode;
+    String nodeVal;
+
+    while(currNode!=null){
+        prevNode = currNode;
+        nodeVal = currNode.record.recordArr[sortedBy];
+        if(toInsert.compareTo(nodeVal)<0){
+            currNode = currNode.left;
+        }else{
+            currNode = currNode.right;
+        }
+    }
+    
+    if(toInsert.compareTo(nodeVal)<0){
+        prevNode.next = Node(record);
+    }
+
+
+
+    employees.printRecords();
+    TJONES0567, 543210987, Thomas Jones, Operations, 202 Operations Road, 68000
+    JGARC0654, 234567890, James Garcia, IT, 777 Tech Square, 72000
+    BSIMO0123, 432109876, Brenda Simmons, Marketing, 333 Ad Avenue, 58000
+    DCOOP0456, 210987654, David Cooper, Sales, 505 Sales Boulevard, 68000
+    PLEWIS0789, 765432109, Patricia Lewis, Finance, 222 Finance Court, 53000
+    KTHOM0567, 789012345, Kevin Thompson, Operations, 999 Operations Lane, 65000
+    MSANC0987, 543210987, Maria Sanchez, HR, 111 HR Avenue, 45000
+    RCLAR0654, 321098765, Richard Clark, IT, 666 Tech Street, 70000
+    ASMIT0123, 432109876, Andrea Smith, Marketing, 444 Ad Boulevard, 57000
+    BJOHN0456, 987654321, Brian Johnson, Sales, 333 Sales Road, 67000
+    LTURN0789, 210987654, Linda Turner, Finance, 555 Finance Square, 52000
+    WROSE0567, 654321789, William Rose, Operations, 777 Operations Avenue, 66000
+    SSAND0987, 765432109, Susan Sanders, HR, 888 HR Lane, 47000
+    DCOOP0123, 543210987, Donna Cooper, Marketing, 456 Ad Street, 59000
+    KSMITH0123, 876543210, Karen Smith, Marketing, 789 Ad Street, 60000
+    CSAND0987, 321098765, Carol Sanders, HR, 888 HR Plaza, 48000
+    PSMIT0654, 234567890, Paul Smith, IT, 123 Tech Court, 73000
     /*public void makeHeap(String field){
 
         if (totalRecords<1){
@@ -22,6 +102,43 @@
             parent = (i-1)/2;
         }
     }*/
+
+    public Node deleteBSTMind(Node node){
+        if (node == null){
+            return null;
+        }
+        if(node.left==null){
+            Node temp = node.right;
+            node = null;
+            return temp;
+        }
+        node.left = deleteBSTMind(node.left);
+        return node;
+    }
+
+    public void updateRecord(Record record){
+
+        //use BST to find record
+        //delete record
+        //remove from sorted 
+        //remove from bst
+    }
+
+    employees.addRecordToSorted("TJONES0567, 998301928, Thomas Jones, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("ABC0567, 123456787, ABC, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("CDE567, 123456785, CDE, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("ZZZ567, 123456788, ZZZ, Operations, 202 Operations Road, 68000");
+    employees.addRecordToSorted("LMQ, 123456783, LMK, Operations, 202 Operations Road, 68000");
+
+    employees.updateRecord(stringToRecord("ABC0567, 123456787, ABC, Operations, 202 Operations Road, 68000"), stringToRecord("ABC67810, 123456787, ABCGF, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ABC0567, 123456787, ABC, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ZZZ567, 123456788, ZZZ, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ZZZ567, 123456788, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ABC0567, 123456787, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("CDE567, 123456785, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.deleteRecord(stringToRecord("ABC0567, 123456789, Thomas Jones, Operations, 202 Operations Road, 68000"));
+    //employees.printRecords();
+    //employees.printRecords();
  
     public void heapDown(String field, int i, int bottom){
         int left = 2*i+1;
