@@ -589,6 +589,41 @@ public class Records{
         System.out.println();
     }
 
+    //Updates the file using the records array
+    public void writeRecordsToFile(){
+        FileWriter writer = null;
+        FileWriter appendWriter = null;
+        try{
+            writer = new FileWriter(file);
+            writer.write("Employee-ID, SIN, Name, Department, Address, Salary");
+            writer.close();
+            appendWriter = new FileWriter(file, true);
+            String data;
+            Record record;
+            for (int i = 0; i<totalRecords; i++){
+                data = "\n";
+                record = records[i];
+                for(int x = 0; x<6 ;x++){
+                    data+=record.recordArr[x];
+                    if(x!=5){
+                        data+=", ";
+                    }
+                }
+                appendWriter.append(data);
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+                appendWriter.close();
+    
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     //runs interactive system, allowing the user to print, add, remove, find, and update records
     public static void runSystem(){
@@ -673,6 +708,11 @@ public class Records{
                     break;
 
                 default:
+                System.out.println("Type \"DELETE\" to delete all changes. Type any other character to update the records.txt file");
+                input2 = scanner.next();
+                if(!input2.toLowerCase().equals("delete")){
+                    employees.writeRecordsToFile();
+                }
                 System.out.println("GoodBye!");
                 return;                    
 
