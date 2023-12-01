@@ -1,16 +1,51 @@
 package Programming2;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 
-// trieNode class 
+/**
+ * Data Structures Description:
+ * 
+ * TrieNode Class: 
+ * The TrieNode class is a fundamental component representing each node in the trie. 
+ * Each node contains an array of TrieNode references, one for each letter of the alphabet, 
+ * indicating possible subsequent letters for words stored in the trie.  Additionally, 
+ * a boolean isEndOfWord is used to indicate if a node marks the end of a word, and a 
+ * Set<Integer> paragraphNumbers to store the paragraph numbers in which the word appears.
+ * 
+ * Trie Structure: 
+ * The trie is a tree-like data structure that stores a dynamic set of strings in a space-
+ * and time-efficient manner and it allows for quick lookups of words. In this program, it's 
+ * used to index words from the text document excluding noise words.
+ * 
+ * HashSet for Noise Words: 
+ * A HashSet is used to store noise words due to its O(1) average time complexity for 
+ * insertions and lookups. This allows the program to efficiently determine whether a word 
+ * is a noise word or not while processing the text.
+ * 
+ * ArrayList for Paragraphs: 
+ * An ArrayList is used to store the paragraphs of the text document as it provides O(1) 
+ * time complexity for random access, which is useful when retrieving paragraphs based 
+ * on paragraph numbers found in the trie.
+ * 
+ * The system is designed to be memory efficient and quick in searching operations, 
+ * leveraging the strengths of each data structure for its intended purpose.
+ */
+
+
+
+// trieNode class
 class TrieNode {
     TrieNode[] children = new TrieNode[26]; // assuming only lowercase letters
-    boolean isEndOfWord;
+    boolean isEndOfWord; // checks if the current node in the trie represents the end of a complete word or not
     Set<Integer> paragraphNumbers; // to store paragraph numbers
 
     TrieNode() {
@@ -19,160 +54,243 @@ class TrieNode {
         for (int i = 0; i < 26; i++) {
             children[i] = null;
         }
-        
     }
 }
 
+
+// text processing program 
 public class TextProcessingProgram {
+    private static TrieNode root = new TrieNode(); // root of the trie
+    private static Set<String> noiseWords = new HashSet<>(); // initialize variable for noise words
+    private static List<String> paragraphs = new ArrayList<>(); // initialize a list to store paragraphs
 
     public static void main(String[] args) {
         // reading files
         String textFilePath = "The_State_of_Data_Final.txt";
         String noiseWordsFilePath = "noise_words.txt";
-        
-        
-        TrieNode root = new TrieNode(); // root of the trie
-        Set<String> noiseWords = new HashSet<>(); // initialize variable for noiseWords
-        int paragraphNumber = 0; // initialize paragraph number
 
-        
-        loadNoiseWords(noiseWordsFilePath, noiseWords); // loading noisewords
+        loadNoiseWords(noiseWordsFilePath); // loading noise words from the file 
 
+        // process the text file, remove noise words and build the trie
+        try (BufferedReader textReader = new BufferedReader(new FileReader(textFilePath))) {
+            String line; // declaring variable to store each line of text read from the file
+            StringBuilder paragraph = new StringBuilder(); // initialize variable for paragraphs which will then be used to construct paragraphs from the lines of text
+            int paragraphNumber = 0; // initialize paragraph number
 
-         // process the State of Data Final text file, removing noise words and building the trie
-         try (BufferedReader textReader = new BufferedReader(new FileReader(textFilePath))) {
-            String line;
-            StringBuilder paragraph = new StringBuilder(); // initialize variable for paragraphs
-            while ((line = textReader.readLine()) != null) {
-                if (line.trim().isEmpty()) {
+            while ((line = textReader.readLine()) != null) { // loop running as long as there are more lines to read in the file 
+                if (line.trim().isEmpty()) { // check if the given line consists only of white space (empty)
                     if (paragraph.length() > 0) {
-                        processParagraph(root, paragraph.toString(), ++paragraphNumber, noiseWords);
+                        processParagraph(paragraph.toString(), ++paragraphNumber);
                         paragraph.setLength(0); // resets paragraph builder
                     }
                 } else {
-                    paragraph.append(line).append(" "); // append line to the current paragraph
+                    paragraph.append(line).append(" "); // Append line to the current paragraph
                 }
             }
-
             // process the last paragraph if not empty
             if (paragraph.length() > 0) {
-                processParagraph(root, paragraph.toString(), ++paragraphNumber, noiseWords);
+                processParagraph(paragraph.toString(), ++paragraphNumber);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Print the cleaned text...
-        // printTrie(root, new StringBuilder());
+        
+        // Perform searches
+        String[] keywords;
 
-        Scanner scanner = new Scanner(System.in);
+        // // Query 1 single keyword
+        // String keyword1 = "about";
+        // Set<Integer> query1Result = searchSingle(keyword1);
+        // displayResults("Query 1 (Single Keyword: " + keyword1 + ")", query1Result);
 
-        // getting user input for conjunctive search
-        System.out.println("Enter keywords for conjunctive search (separated by space): ");
-        String conjunctiveInput = scanner.nextLine();
-        String[] conjunctiveKeywords = conjunctiveInput.toLowerCase().split("\\s+");
+        // // Query 2 conjunctive search
+        // keywords = new String[]{"big", "data"};
+        // Set<Integer> query2Result = searchConjunctive(keywords);
+        // displayResults("Query 2 (Conjunctive Search: " + String.join(", ", keywords) + ")", query2Result);
 
-        // getting user input for disjunctive search
-        System.out.println("Enter keywords for disjunctive search (separated by space): ");
-        String disjunctiveInput = scanner.nextLine();
-        String[] disjunctiveKeywords = disjunctiveInput.toLowerCase().split("\\s+");
+        // Query 3 disjunctive search
+        // keywords = new String[]{"growth", "rate"};
+        // Set<Integer> disjunctiveResult = searchDisjunctive(keywords);
+        // displayResults("Query 3 (Disjunctive Search: " + String.join(", ", keywords) + ")", disjunctiveResult);
 
-        // perform searches
-        Set<Integer> conjunctiveResult = searchConjunctive(root, conjunctiveKeywords);
-        Set<Integer> disjunctiveResult = searchDisjunctive(root, disjunctiveKeywords);
+        // Query 4 keyword1 and (keyword2 or keyword3)
+        // keywords = new String[]{"bullying", "growth", "harassment"};
+        // Set<Integer> conjunctiveWithOrResult = searchConjunctiveWithOr(keywords);
+        // displayResults("Query 4 (Conjunctive with 'Or': " + String.join(", ", keywords) + ")", conjunctiveWithOrResult);
 
-        // Displaying results
-        System.out.println("Conjunctive Search Result: " + conjunctiveResult);
-        System.out.println("Disjunctive Search Result: " + disjunctiveResult);
-
-        scanner.close();
+        // // Query 5 keyword1 or (keyword2 and keyword3)
+        // keywords = new String[]{"growth", "rate", "increase"};
+        // Set<Integer> disjunctiveWithAndResult = searchDisjunctiveWithAnd(keywords);
+        // displayResults("Query 5 (Disjunctive with 'And': " + String.join(", ", keywords) + ")", disjunctiveWithAndResult);
     }
 
-    // Function to insert a word into the trie with paragraph number
-    private static void insertWord(TrieNode root, String word, int paragraphNumber) {
+
+
+   // function to process a paragraph, split into words, and insert into the trie
+        private static void processParagraph(String paragraph, int paragraphNumber) {
+        // split the paragraph into words and keep only alphanumeric characters
+        String[] words = paragraph.toLowerCase().split("[^a-zA-Z0-9]+");
+
+        for (String word : words) {
+            if (!word.isEmpty() && !noiseWords.contains(word)) {
+                insertWord(word, paragraphNumber); // inserting words into the trie
+            }
+        }
+        // store the cleaned paragraph in the list
+        paragraphs.add(paragraph.replaceAll("[^a-zA-Z0-9]+", " "));
+        }
+
+        // function to insert a word into the trie with paragraph number
+        private static void insertWord(String word, int paragraphNumber) {
         TrieNode current = root;
         for (char c : word.toCharArray()) {
             if (!Character.isLetter(c)) {
-                // skip any non-alphabetic characters
-                continue;
+                continue; // skip any non-alphabetic characters
             }
-            int index = Character.toLowerCase(c) - 'a';
-            if (index < 0 || index >= 26) {
-                // ensure the index is within bounds
-                continue;
-            }
+            int index = c - 'a';
             if (current.children[index] == null) {
                 current.children[index] = new TrieNode();
             }
             current = current.children[index];
         }
         current.isEndOfWord = true;
-        current.paragraphNumbers.add(paragraphNumber); // add the paragraph number to the set 
-    }
-
-    // print the cleaned text
-    private static void printTrie(TrieNode node, StringBuilder currentWord) {
-        if (node.isEndOfWord) {
-            System.out.println(currentWord.toString() + " " + node.paragraphNumbers);
+        current.paragraphNumbers.add(paragraphNumber); // adding the paragraph number to the set
         }
 
-        for (char c = 'a'; c <= 'z'; c++) {
-            int index = c - 'a';
-            if (node.children[index] != null) {
-                currentWord.append(c);
-                printTrie(node.children[index], currentWord);
-                currentWord.deleteCharAt(currentWord.length() - 1);
+        // Method to display search results
+        private static void displayResults(String queryDescription, Set<Integer> paragraphNumbers) {
+        System.out.println(queryDescription);
+        if (paragraphNumbers.isEmpty()) {
+            System.out.println("No results found.");
+        } else {
+        // Convert the set to a list and sort it
+        List<Integer> sortedParagraphNumbers = new ArrayList<>(paragraphNumbers);
+        Collections.sort(sortedParagraphNumbers);
+
+        for (Integer paragraphNumber : sortedParagraphNumbers) {
+            // Retrieve and display the paragraph
+            String paragraph = getParagraphByNumber(paragraphNumber);
+            System.out.println("Paragraph " + paragraphNumber + ": " + paragraph);
+        }
+    }
+}
+
+
+   // Function to search for paragraphs where all keywords are present (Conjunctive)
+    private static Set<Integer> searchConjunctive(String[] keywords) {
+        Set<Integer> result = null;
+        for (String keyword : keywords) {
+            keyword = keyword.toLowerCase(); // Convert the keyword to lowercase
+            Set<Integer> paragraphs = searchWord(keyword);
+            if (result == null) {
+                result = new HashSet<>(paragraphs);
+            } else {
+                result.retainAll(paragraphs); // Intersection between both sets
             }
         }
+
+        return result == null ? new HashSet<>() : result;
     }
 
-    // Search for paragraphs where all keywords are present
-private static Set<Integer> searchConjunctive(TrieNode root, String[] keywords) {
-    Set<Integer> result = null;
-    for (String keyword : keywords) {
-        Set<Integer> paragraphs = searchWord(root, keyword);
-        if (result == null) {
-            result = new HashSet<>(paragraphs);
+    // Function to search for paragraphs where any of the keywords are present (Disjunctive)
+    private static Set<Integer> searchDisjunctive(String[] keywords) {
+        Set<Integer> result = new HashSet<>();
+        for (String keyword : keywords) {
+            keyword = keyword.toLowerCase(); // Convert the keyword to lowercase
+            Set<Integer> paragraphs = searchWord(keyword);
+            result.addAll(paragraphs); // Union operation both sets
+        }
+
+        return result;
+    }
+
+    // Function to search for paragraphs containing a single keyword
+    private static Set<Integer> searchSingle(String keyword) {
+        keyword = keyword.toLowerCase(); // Convert the keyword to lowercase
+        Set<Integer> result = searchWord(keyword);
+
+        return result;
+    }
+
+    // Function to search for paragraphs containing the first keyword and any one of the subsequent keywords
+    private static Set<Integer> searchConjunctiveWithOr(String[] keywords) {
+        if (keywords.length < 2) {
+            return new HashSet<>(); // Not enough keywords for the query
+        }
+
+        Set<Integer> result = new HashSet<>();
+        Set<Integer> firstKeywordParagraphs = searchWord(keywords[0].toLowerCase());
+
+        // Creating a set for paragraphs containing any of the subsequent keywords
+        Set<Integer> orKeywordsParagraphs = new HashSet<>();
+        for (int i = 1; i < keywords.length; i++) {
+            orKeywordsParagraphs.addAll(searchWord(keywords[i].toLowerCase()));
+        }
+
+        // Adding paragraphs that contain the first keyword and any one of the subsequent keywords
+        for (Integer paragraphNumber : firstKeywordParagraphs) {
+            if (orKeywordsParagraphs.contains(paragraphNumber)) {
+                result.add(paragraphNumber);
+            }
+        }
+
+        return result;
+    }
+
+
+    private static Set<Integer> searchDisjunctiveWithAnd(String[] keywords) {
+        Set<Integer> result = new HashSet<>();
+
+        if (keywords.length < 2) {
+            return result; // Not enough keywords for the query
+        }
+
+        Set<Integer> firstKeywordParagraphs = searchWord(keywords[0]);
+        result.addAll(firstKeywordParagraphs);
+
+        for (int i = 1; i < keywords.length; i++) {
+            Set<Integer> paragraphs = searchWord(keywords[i]);
+            result.retainAll(paragraphs); // Intersection between both sets
+        }
+
+        // Print the paragraphs corresponding to the paragraph numbers
+        for (Integer paragraphNumber : result) {
+            String paragraph = getParagraphByNumber(paragraphNumber);
+            System.out.println("Paragraph " + paragraphNumber + ": " + paragraph);
+        }
+
+        return result;
+    }
+
+    
+
+    // function to retrieve a paragraph by its paragraph number 
+    private static String getParagraphByNumber(int paragraphNumber) {
+        if (paragraphNumber >= 1 && paragraphNumber <= paragraphs.size()) {
+            return "\n" + paragraphs.get(paragraphNumber - 1) + "\n"; // adding newline characters for spacing
         } else {
-            result.retainAll(paragraphs); // intersection between both sets 
+            return "Paragraph not found"; // handling the case where the paragraph number is invalid
         }
     }
-    return result == null ? new HashSet<>() : result;
-}
 
-// Search for paragraphs where any of the keywords are present
-private static Set<Integer> searchDisjunctive(TrieNode root, String[] keywords) {
-    Set<Integer> result = new HashSet<>();
-    for (String keyword : keywords) {
-        Set<Integer> paragraphs = searchWord(root, keyword);
-        result.addAll(paragraphs); // union operation both sets 
-    }
-    return result;
-}
 
-// Search for a word in the trie and return the paragraph numbers
-private static Set<Integer> searchWord(TrieNode root, String word) {
-    TrieNode current = root;
-    for (char c : word.toCharArray()) {
-        if (!Character.isLetter(c)) continue;
-        int index = c - 'a';
-        if (current.children[index] == null) {
-            return new HashSet<>(); // Word not found
+    // function to search for a word in the trie and return the paragraph numbers
+    private static Set<Integer> searchWord(String word) {
+        TrieNode current = root;
+        for (char c : word.toCharArray()) {
+            if (!Character.isLetter(c)) continue;
+            int index = c - 'a';
+            if (current.children[index] == null) {
+                return new HashSet<>(); // Word not found
+            }
+            current = current.children[index];
         }
-        current = current.children[index];
+        return current.isEndOfWord ? current.paragraphNumbers : new HashSet<>();
     }
-    return current.isEndOfWord ? current.paragraphNumbers : new HashSet<>();
-}
 
-private static void processParagraph(TrieNode root, String paragraph, int paragraphNumber, Set<String> noiseWords) {
-    String[] words = paragraph.toLowerCase().split("\\s+"); // split paragraphs into words
-    for (String word : words) {
-        if (!word.isEmpty() && !noiseWords.contains(word)) {
-            insertWord(root, word, paragraphNumber); // insert words into the trie 
-        }
-    }
-}
-    private static void loadNoiseWords(String noiseWordsFilePath, Set<String> noiseWords) {
+    // function to load noise words from the file path
+    private static void loadNoiseWords(String noiseWordsFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(noiseWordsFilePath))) {
             String noiseWord;
             while ((noiseWord = br.readLine()) != null) {
@@ -182,5 +300,4 @@ private static void processParagraph(TrieNode root, String paragraph, int paragr
             System.err.println("Error reading noise words file: " + e.getMessage());
         }
     }
-
 }
