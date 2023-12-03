@@ -11,36 +11,6 @@ import java.util.Scanner;
 import java.util.Set;
 
 
-/**
- * Data Structures Description:
- * 
- * TrieNode Class: 
- * The TrieNode class is a fundamental component representing each node in the trie. 
- * Each node contains an array of TrieNode references, one for each letter of the alphabet, 
- * indicating possible subsequent letters for words stored in the trie.  Additionally, 
- * a boolean isEndOfWord is used to indicate if a node marks the end of a word, and a 
- * Set<Integer> paragraphNumbers to store the paragraph numbers in which the word appears.
- * 
- * Trie Structure: 
- * The trie is a tree-like data structure that stores a dynamic set of strings in a space-
- * and time-efficient manner and it allows for quick lookups of words. In this program, it's 
- * used to index words from the text document excluding noise words.
- * 
- * HashSet for Noise Words: 
- * A HashSet is used to store noise words due to its O(1) average time complexity for 
- * insertions and lookups. This allows the program to efficiently determine whether a word 
- * is a noise word or not while processing the text.
- * 
- * ArrayList for Paragraphs: 
- * An ArrayList is used to store the paragraphs of the text document as it provides O(1) 
- * time complexity for random access, which is useful when retrieving paragraphs based 
- * on paragraph numbers found in the trie.
- * 
- * The system is designed to be memory efficient and quick in searching operations, 
- * leveraging the strengths of each data structure for its intended purpose.
- */
-
-
 
 // trieNode class
 class TrieNode {
@@ -100,12 +70,12 @@ public class TextProcessingProgram {
         String[] keywords;
 
         // // Query 1 single keyword
-        // String keyword1 = "about";
+        // String keyword1 = "urban";
         // Set<Integer> query1Result = searchSingle(keyword1);
         // displayResults("Query 1 (Single Keyword: " + keyword1 + ")", query1Result);
 
-        // // Query 2 conjunctive search
-        // keywords = new String[]{"big", "data"};
+        // Query 2 conjunctive search
+        // keywords = new String[]{"urban", "data"};
         // Set<Integer> query2Result = searchConjunctive(keywords);
         // displayResults("Query 2 (Conjunctive Search: " + String.join(", ", keywords) + ")", query2Result);
 
@@ -120,7 +90,7 @@ public class TextProcessingProgram {
         // displayResults("Query 4 (Conjunctive with 'Or': " + String.join(", ", keywords) + ")", conjunctiveWithOrResult);
 
         // // Query 5 keyword1 or (keyword2 and keyword3)
-        // keywords = new String[]{"growth", "rate", "increase"};
+        // keywords = new String[]{"data", "urban", "way"};
         // Set<Integer> disjunctiveWithAndResult = searchDisjunctiveWithAnd(keywords);
         // displayResults("Query 5 (Disjunctive with 'And': " + String.join(", ", keywords) + ")", disjunctiveWithAndResult);
     }
