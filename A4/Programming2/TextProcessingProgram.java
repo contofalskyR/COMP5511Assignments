@@ -89,8 +89,8 @@ public class TextProcessingProgram {
         // Set<Integer> conjunctiveWithOrResult = searchConjunctiveWithOr(keywords);
         // displayResults("Query 4 (Conjunctive with 'Or': " + String.join(", ", keywords) + ")", conjunctiveWithOrResult);
 
-        // // Query 5 keyword1 or (keyword2 and keyword3)
-        // keywords = new String[]{"data", "urban", "way"};
+        // Query 5 keyword1 or (keyword2 and keyword3)
+        // keywords = new String[]{"proliferation", "urban", "way"};
         // Set<Integer> disjunctiveWithAndResult = searchDisjunctiveWithAnd(keywords);
         // displayResults("Query 5 (Disjunctive with 'And': " + String.join(", ", keywords) + ")", disjunctiveWithAndResult);
     }
@@ -211,27 +211,28 @@ public class TextProcessingProgram {
 
     private static Set<Integer> searchDisjunctiveWithAnd(String[] keywords) {
         Set<Integer> result = new HashSet<>();
-
-        if (keywords.length < 2) {
-            return result; // Not enough keywords for the query
+    
+        if (keywords.length < 3) {
+            return result; // ensure there are enough keywords
         }
-
-        Set<Integer> firstKeywordParagraphs = searchWord(keywords[0]);
+    
+        // find paragraphs containing keyword1
+        Set<Integer> firstKeywordParagraphs = searchWord(keywords[0].toLowerCase());
         result.addAll(firstKeywordParagraphs);
-
-        for (int i = 1; i < keywords.length; i++) {
-            Set<Integer> paragraphs = searchWord(keywords[i]);
-            result.retainAll(paragraphs); // Intersection between both sets
-        }
-
-        // Print the paragraphs corresponding to the paragraph numbers
-        for (Integer paragraphNumber : result) {
-            String paragraph = getParagraphByNumber(paragraphNumber);
-            System.out.println("Paragraph " + paragraphNumber + ": " + paragraph);
-        }
-
+    
+        // find paragraphs containing both keyword2 and keyword3
+        Set<Integer> secondKeywordParagraphs = searchWord(keywords[1].toLowerCase());
+        Set<Integer> thirdKeywordParagraphs = searchWord(keywords[2].toLowerCase());
+    
+        // intersection of paragraphs for keyword2 and keyword3
+        secondKeywordParagraphs.retainAll(thirdKeywordParagraphs);
+    
+        // union the results of keyword1 paragraphs and the intersection of keyword2 and keyword3 paragraphs
+        result.addAll(secondKeywordParagraphs);
+    
         return result;
     }
+    
 
     
 
